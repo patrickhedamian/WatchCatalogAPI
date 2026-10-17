@@ -19,19 +19,18 @@ access so the returned image URLs can be displayed by a separate React app.
 Configure the storage account to permit public blob access. Database and storage
 credentials are never returned by the API.
 
-## Database migrations and seed data
+## Database schema
 
-The initial migration creates the `WatchProducts` table and inserts ten sample
-products. After setting `ConnectionStrings__WatchCatalog`, run from this
-directory:
+The API uses the existing `Watches` table. Its EF model maps to the columns
+`Id`, `ProductNumber`, `ProductName`, `Model`, `ShortDescription`,
+`FullDescription`, `Price`, `ImageUrl`, `CaliberAndMovement`, `Chronograph`,
+`Weight`, `Height`, `Diameter`, `Thickness`, `Jewel`, `CaseMaterial`,
+`StrapMaterial`, `Featured`, and `ImageBlob`. `Featured` and `ImageBlob` are
+nullable. The API does not apply migrations at startup.
 
-```powershell
-dotnet ef database update
-```
-
-For subsequent model changes, create and apply migrations with
-`dotnet ef migrations add <MigrationName>` and `dotnet ef database update`.
-Migrations are not automatically applied at application startup.
+The checked-in initial migration predates this schema and creates a
+`WatchProducts` table. Do not run `dotnet ef database update` against the
+existing database; it would not initialize the `Watches` schema.
 
 ## API
 
@@ -41,8 +40,10 @@ at `/openapi/v1.json`. For example, the local HTTP profile uses
 `http://localhost:5196/swagger`.
 
 The `WatchCatalogAPI.http` file demonstrates list/detail/create/update/delete
-and image replacement operations. Prices are returned as decimal PHP amounts
-with `currency: "PHP"`. Image replacement accepts JPEG, PNG, or WebP files up
+and image replacement operations. API field names follow the `Watches` column
+names; binary `ImageBlob` data is stored in the table but omitted from JSON
+responses. Prices are returned as decimal PHP amounts with `currency: "PHP"`.
+Image replacement accepts JPEG, PNG, or WebP files up
 to 10 MB. Deleting a product removes its managed Blob image only when no other
 product references that same URL.
 

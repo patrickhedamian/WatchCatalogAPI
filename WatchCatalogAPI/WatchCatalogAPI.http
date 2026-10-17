@@ -4,7 +4,7 @@
 GET {{WatchCatalogAPI_HostAddress}}/api/products
 Accept: application/json
 
-### Get seeded product by ID
+### Get a product by ID
 GET {{WatchCatalogAPI_HostAddress}}/api/products/1
 Accept: application/json
 
@@ -18,21 +18,22 @@ Content-Type: application/json
 
 {
   "productNumber": "WC-2001",
-  "name": "Aster",
+  "productName": "Aster",
   "model": "Travel GMT",
   "shortDescription": "A practical automatic watch with a second time zone.",
   "fullDescription": "A stainless-steel travel watch with a 24-hour GMT hand and a durable leather strap.",
   "price": 22500.00,
   "caliberAndMovement": "Automatic GMT",
   "chronograph": false,
-  "weightGrams": 92,
-  "heightMm": 12,
-  "diameterMm": 41,
-  "thicknessMm": 12,
-  "jewelCount": 24,
+  "weight": 92,
+  "height": 12,
+  "diameter": 41,
+  "thickness": 12,
+  "jewel": 24,
   "caseMaterial": "316L stainless steel",
   "strapMaterial": "Leather",
-  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT"
+  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT",
+  "featured": false
 }
 
 ### Replace product values (change the ID after creating)
@@ -41,21 +42,22 @@ Content-Type: application/json
 
 {
   "productNumber": "WC-2001",
-  "name": "Aster",
+  "productName": "Aster",
   "model": "Travel GMT Updated",
   "shortDescription": "An updated travel-ready automatic watch.",
   "fullDescription": "A stainless-steel travel watch with a 24-hour GMT hand and a durable leather strap.",
   "price": 22900.00,
   "caliberAndMovement": "Automatic GMT",
   "chronograph": false,
-  "weightGrams": 92,
-  "heightMm": 12,
-  "diameterMm": 41,
-  "thicknessMm": 12,
-  "jewelCount": 24,
+  "weight": 92,
+  "height": 12,
+  "diameter": 41,
+  "thickness": 12,
+  "jewel": 24,
   "caseMaterial": "316L stainless steel",
   "strapMaterial": "Leather",
-  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT"
+  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT",
+  "featured": false
 }
 
 ### Upload/replace product image (select an image file in the REST client)

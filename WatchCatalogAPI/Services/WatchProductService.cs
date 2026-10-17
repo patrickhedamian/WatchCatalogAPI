@@ -23,10 +23,29 @@ public sealed class WatchProductService(
             return cachedProducts;
         }
 
-        var products = await dbContext.WatchProducts
+        var products = await dbContext.Watches
             .AsNoTracking()
             .OrderBy(product => product.Id)
-            .Select(product => ToResponse(product))
+            .Select(product => new WatchProductResponse(
+                product.Id,
+                product.ProductNumber,
+                product.ProductName,
+                product.Model,
+                product.ShortDescription,
+                product.FullDescription,
+                product.Price,
+                "PHP",
+                product.ImageUrl,
+                product.CaliberAndMovement,
+                product.Chronograph,
+                product.Weight,
+                product.Height,
+                product.Diameter,
+                product.Thickness,
+                product.Jewel,
+                product.CaseMaterial,
+                product.StrapMaterial,
+                product.Featured))
             .ToListAsync(cancellationToken);
 
         cache.Set(ProductListCacheKey, products, CacheDuration);
@@ -41,10 +60,29 @@ public sealed class WatchProductService(
             return cachedProduct;
         }
 
-        var product = await dbContext.WatchProducts
+        var product = await dbContext.Watches
             .AsNoTracking()
             .Where(product => product.Id == id)
-            .Select(product => ToResponse(product))
+            .Select(product => new WatchProductResponse(
+                product.Id,
+                product.ProductNumber,
+                product.ProductName,
+                product.Model,
+                product.ShortDescription,
+                product.FullDescription,
+                product.Price,
+                "PHP",
+                product.ImageUrl,
+                product.CaliberAndMovement,
+                product.Chronograph,
+                product.Weight,
+                product.Height,
+                product.Diameter,
+                product.Thickness,
+                product.Jewel,
+                product.CaseMaterial,
+                product.StrapMaterial,
+                product.Featured))
             .SingleOrDefaultAsync(cancellationToken);
 
         if (product is not null)
@@ -62,24 +100,25 @@ public sealed class WatchProductService(
         var product = new WatchProduct
         {
             ProductNumber = request.ProductNumber.Trim(),
-            Name = request.Name.Trim(),
+            ProductName = request.ProductName.Trim(),
             Model = request.Model.Trim(),
             ShortDescription = request.ShortDescription.Trim(),
             FullDescription = request.FullDescription.Trim(),
             Price = request.Price,
             CaliberAndMovement = request.CaliberAndMovement.Trim(),
             Chronograph = request.Chronograph,
-            WeightGrams = request.WeightGrams,
-            HeightMm = request.HeightMm,
-            DiameterMm = request.DiameterMm,
-            ThicknessMm = request.ThicknessMm,
-            JewelCount = request.JewelCount,
+            Weight = request.Weight,
+            Height = request.Height,
+            Diameter = request.Diameter,
+            Thickness = request.Thickness,
+            Jewel = request.Jewel,
             CaseMaterial = request.CaseMaterial.Trim(),
             StrapMaterial = request.StrapMaterial.Trim(),
-            ImageUrl = request.ImageUrl.Trim()
+            ImageUrl = request.ImageUrl.Trim(),
+            Featured = request.Featured
         };
 
-        dbContext.WatchProducts.Add(product);
+        dbContext.Watches.Add(product);
         try
         {
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -98,7 +137,7 @@ public sealed class WatchProductService(
         UpdateWatchProductRequest request,
         CancellationToken cancellationToken)
     {
-        var product = await dbContext.WatchProducts
+        var product = await dbContext.Watches
             .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
 
         if (product is null)
@@ -108,21 +147,22 @@ public sealed class WatchProductService(
 
         var previousImageUrl = product.ImageUrl;
         product.ProductNumber = request.ProductNumber.Trim();
-        product.Name = request.Name.Trim();
+        product.ProductName = request.ProductName.Trim();
         product.Model = request.Model.Trim();
         product.ShortDescription = request.ShortDescription.Trim();
         product.FullDescription = request.FullDescription.Trim();
         product.Price = request.Price;
         product.CaliberAndMovement = request.CaliberAndMovement.Trim();
         product.Chronograph = request.Chronograph;
-        product.WeightGrams = request.WeightGrams;
-        product.HeightMm = request.HeightMm;
-        product.DiameterMm = request.DiameterMm;
-        product.ThicknessMm = request.ThicknessMm;
-        product.JewelCount = request.JewelCount;
+        product.Weight = request.Weight;
+        product.Height = request.Height;
+        product.Diameter = request.Diameter;
+        product.Thickness = request.Thickness;
+        product.Jewel = request.Jewel;
         product.CaseMaterial = request.CaseMaterial.Trim();
         product.StrapMaterial = request.StrapMaterial.Trim();
         product.ImageUrl = request.ImageUrl.Trim();
+        product.Featured = request.Featured;
 
         try
         {
@@ -136,7 +176,7 @@ public sealed class WatchProductService(
         InvalidateProductCaches(id);
 
         if (!string.Equals(previousImageUrl, product.ImageUrl, StringComparison.Ordinal)
-            && !await dbContext.WatchProducts.AnyAsync(
+            && !await dbContext.Watches.AnyAsync(
                 other => other.Id != id && other.ImageUrl == previousImageUrl,
                 cancellationToken))
         {
@@ -148,7 +188,7 @@ public sealed class WatchProductService(
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var product = await dbContext.WatchProducts
+        var product = await dbContext.Watches
             .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
 
         if (product is null)
@@ -156,14 +196,14 @@ public sealed class WatchProductService(
             return false;
         }
 
-        if (!await dbContext.WatchProducts.AnyAsync(
+        if (!await dbContext.Watches.AnyAsync(
                 other => other.Id != id && other.ImageUrl == product.ImageUrl,
                 cancellationToken))
         {
             await imageStorage.DeleteIfManagedAsync(product.ImageUrl, cancellationToken);
         }
 
-        dbContext.WatchProducts.Remove(product);
+        dbContext.Watches.Remove(product);
         await dbContext.SaveChangesAsync(cancellationToken);
         InvalidateProductCaches(id);
         return true;
@@ -175,7 +215,7 @@ public sealed class WatchProductService(
         string contentType,
         CancellationToken cancellationToken)
     {
-        var product = await dbContext.WatchProducts
+        var product = await dbContext.Watches
             .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
 
         if (product is null)
@@ -192,7 +232,7 @@ public sealed class WatchProductService(
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        if (!await dbContext.WatchProducts.AnyAsync(
+        if (!await dbContext.Watches.AnyAsync(
                 other => other.Id != id && other.ImageUrl == previousImageUrl,
                 cancellationToken))
         {
@@ -215,22 +255,23 @@ public sealed class WatchProductService(
         new(
             product.Id,
             product.ProductNumber,
-            product.Name,
+            product.ProductName,
             product.Model,
             product.ShortDescription,
             product.FullDescription,
             product.Price,
             "PHP",
+            product.ImageUrl,
             product.CaliberAndMovement,
             product.Chronograph,
-            product.WeightGrams,
-            product.HeightMm,
-            product.DiameterMm,
-            product.ThicknessMm,
-            product.JewelCount,
+            product.Weight,
+            product.Height,
+            product.Diameter,
+            product.Thickness,
+            product.Jewel,
             product.CaseMaterial,
             product.StrapMaterial,
-            product.ImageUrl);
+            product.Featured);
 }
 
 public sealed class ProductNumberConflictException()

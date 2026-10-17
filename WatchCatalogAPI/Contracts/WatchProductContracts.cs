@@ -2,125 +2,130 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WatchCatalogAPI.Contracts;
 
-/// <summary>Fields required to create a watch product.</summary>
+/// <summary>Fields required to create a watch.</summary>
 public sealed record CreateWatchProductRequest
 {
-    [Required, StringLength(50)]
+    [Required]
     public required string ProductNumber { get; init; }
 
-    [Required, StringLength(150)]
-    public required string Name { get; init; }
+    [Required]
+    public required string ProductName { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string Model { get; init; }
 
-    [Required, StringLength(300)]
+    [Required]
     public required string ShortDescription { get; init; }
 
-    [Required, StringLength(4000)]
+    [Required]
     public required string FullDescription { get; init; }
 
     [Range(typeof(decimal), "0.01", "9999999999999999")]
     public decimal Price { get; init; }
 
-    [Required, StringLength(200)]
+    [Required, Url]
+    public required string ImageUrl { get; init; }
+
+    [Required]
     public required string CaliberAndMovement { get; init; }
 
     public bool Chronograph { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal WeightGrams { get; init; }
+    public decimal Weight { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal HeightMm { get; init; }
+    public decimal Height { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal DiameterMm { get; init; }
+    public decimal Diameter { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal ThicknessMm { get; init; }
+    public decimal Thickness { get; init; }
 
     [Range(0, int.MaxValue)]
-    public int JewelCount { get; init; }
+    public int Jewel { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string CaseMaterial { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string StrapMaterial { get; init; }
 
-    [Required, Url, StringLength(2048)]
-    public required string ImageUrl { get; init; }
+    public bool? Featured { get; init; }
 }
 
-/// <summary>Fields used to replace all editable values of a watch product.</summary>
+/// <summary>Fields used to replace all editable values of a watch.</summary>
 public sealed record UpdateWatchProductRequest
 {
-    [Required, StringLength(50)]
+    [Required]
     public required string ProductNumber { get; init; }
 
-    [Required, StringLength(150)]
-    public required string Name { get; init; }
+    [Required]
+    public required string ProductName { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string Model { get; init; }
 
-    [Required, StringLength(300)]
+    [Required]
     public required string ShortDescription { get; init; }
 
-    [Required, StringLength(4000)]
+    [Required]
     public required string FullDescription { get; init; }
 
     [Range(typeof(decimal), "0.01", "9999999999999999")]
     public decimal Price { get; init; }
 
-    [Required, StringLength(200)]
+    [Required, Url]
+    public required string ImageUrl { get; init; }
+
+    [Required]
     public required string CaliberAndMovement { get; init; }
 
     public bool Chronograph { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal WeightGrams { get; init; }
+    public decimal Weight { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal HeightMm { get; init; }
+    public decimal Height { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal DiameterMm { get; init; }
+    public decimal Diameter { get; init; }
 
     [Range(typeof(decimal), "0.01", "99999999")]
-    public decimal ThicknessMm { get; init; }
+    public decimal Thickness { get; init; }
 
     [Range(0, int.MaxValue)]
-    public int JewelCount { get; init; }
+    public int Jewel { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string CaseMaterial { get; init; }
 
-    [Required, StringLength(100)]
+    [Required]
     public required string StrapMaterial { get; init; }
 
-    [Required, Url, StringLength(2048)]
-    public required string ImageUrl { get; init; }
+    public bool? Featured { get; init; }
 }
 
-/// <summary>Watch product data returned by the catalog API. Prices are in PHP.</summary>
+/// <summary>Watch data returned by the catalog API. Prices are in PHP.</summary>
 public sealed record WatchProductResponse(
     int Id,
     string ProductNumber,
-    string Name,
+    string ProductName,
     string Model,
     string ShortDescription,
     string FullDescription,
     decimal Price,
     string Currency,
+    string ImageUrl,
     string CaliberAndMovement,
     bool Chronograph,
-    decimal WeightGrams,
-    decimal HeightMm,
-    decimal DiameterMm,
-    decimal ThicknessMm,
-    int JewelCount,
+    decimal Weight,
+    decimal Height,
+    decimal Diameter,
+    decimal Thickness,
+    int Jewel,
     string CaseMaterial,
     string StrapMaterial,
-    string ImageUrl);
+    bool? Featured);
