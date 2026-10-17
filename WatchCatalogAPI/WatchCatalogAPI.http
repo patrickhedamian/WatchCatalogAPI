@@ -1,0 +1,73 @@
+@WatchCatalogAPI_HostAddress = http://localhost:5196
+
+### Get all products
+GET {{WatchCatalogAPI_HostAddress}}/api/products
+Accept: application/json
+
+### Get seeded product by ID
+GET {{WatchCatalogAPI_HostAddress}}/api/products/1
+Accept: application/json
+
+### Get a product that does not exist
+GET {{WatchCatalogAPI_HostAddress}}/api/products/99999
+Accept: application/json
+
+### Create a product
+POST {{WatchCatalogAPI_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "productNumber": "WC-2001",
+  "name": "Aster",
+  "model": "Travel GMT",
+  "shortDescription": "A practical automatic watch with a second time zone.",
+  "fullDescription": "A stainless-steel travel watch with a 24-hour GMT hand and a durable leather strap.",
+  "price": 22500.00,
+  "caliberAndMovement": "Automatic GMT",
+  "chronograph": false,
+  "weightGrams": 92,
+  "heightMm": 12,
+  "diameterMm": 41,
+  "thicknessMm": 12,
+  "jewelCount": 24,
+  "caseMaterial": "316L stainless steel",
+  "strapMaterial": "Leather",
+  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT"
+}
+
+### Replace product values (change the ID after creating)
+PUT {{WatchCatalogAPI_HostAddress}}/api/products/11
+Content-Type: application/json
+
+{
+  "productNumber": "WC-2001",
+  "name": "Aster",
+  "model": "Travel GMT Updated",
+  "shortDescription": "An updated travel-ready automatic watch.",
+  "fullDescription": "A stainless-steel travel watch with a 24-hour GMT hand and a durable leather strap.",
+  "price": 22900.00,
+  "caliberAndMovement": "Automatic GMT",
+  "chronograph": false,
+  "weightGrams": 92,
+  "heightMm": 12,
+  "diameterMm": 41,
+  "thicknessMm": 12,
+  "jewelCount": 24,
+  "caseMaterial": "316L stainless steel",
+  "strapMaterial": "Leather",
+  "imageUrl": "https://placehold.co/640x480?text=Travel+GMT"
+}
+
+### Upload/replace product image (select an image file in the REST client)
+PUT {{WatchCatalogAPI_HostAddress}}/api/products/11/image
+Content-Type: multipart/form-data; boundary=WatchImageBoundary
+
+--WatchImageBoundary
+Content-Disposition: form-data; name="image"; filename="watch.png"
+Content-Type: image/png
+
+< ./watch.png
+--WatchImageBoundary--
+
+### Delete product and its unshared Blob image
+DELETE {{WatchCatalogAPI_HostAddress}}/api/products/11
