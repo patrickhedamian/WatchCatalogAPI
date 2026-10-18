@@ -1,7 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WatchCatalogAPI.Models;
 
 public sealed class WatchProduct
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required string ProductNumber { get; set; }
     public required string ProductName { get; set; }
