@@ -17,7 +17,7 @@ public sealed class WatchCatalogDbContextFactory : IDesignTimeDbContextFactory<W
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
-        var connectionString = configuration.GetConnectionString("WatchCatalog");
+        var connectionString = configuration["SqlConnectionString"];
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new InvalidOperationException(
