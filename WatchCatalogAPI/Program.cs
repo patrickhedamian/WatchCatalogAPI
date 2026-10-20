@@ -1,9 +1,17 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using WatchCatalogAPI.Data;
 using WatchCatalogAPI.Middleware;
 using WatchCatalogAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultUrl = new Uri(
+    "https://kv-react-demo.vault.azure.net/");
+
+builder.Configuration.AddAzureKeyVault(
+    keyVaultUrl,
+    new DefaultAzureCredential());
 
 builder.Services
     .AddControllers()
@@ -15,7 +23,7 @@ builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<WatchCatalogDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("WatchCatalog");
+    var connectionString = builder.Configuration["SqlConnectionString"];
     if (string.IsNullOrWhiteSpace(connectionString))
     {
         throw new InvalidOperationException(
